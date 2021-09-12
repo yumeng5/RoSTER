@@ -9,11 +9,11 @@ def main():
     parser.add_argument("--data_dir",
                         default="conll",
                         type=str,
-                        help="The dataset directory.")
+                        help="the dataset directory.")
     parser.add_argument("--pretrained_model", 
                         default='roberta-base', 
                         type=str,
-                        help="Pre-trained language model, default to roberta base.")
+                        help="pre-trained language model, default to roberta base.")
     parser.add_argument('--temp_dir',
                         type=str,
                         default="tmp",
@@ -21,16 +21,16 @@ def main():
     parser.add_argument("--output_dir",
                         default='out',
                         type=str,
-                        help="The output directory where the final model checkpoint will be saved.")
+                        help="the output directory where the final model checkpoint will be saved.")
     parser.add_argument("--max_seq_length",
                         default=128,
                         type=int,
-                        help="The maximum input sequence length.")
+                        help="the maximum input sequence length.")
     parser.add_argument("--tag_scheme",
-                        default='iob',
+                        default='io',
                         type=str,
                         choices=['iob', 'io'],
-                        help="The tagging scheme used.")
+                        help="the tagging scheme used.")
 
     # training settting parameters
     parser.add_argument("--do_train",
@@ -111,10 +111,6 @@ def main():
                         default=0.1,
                         type=float,
                         help="dropout ratio")
-    parser.add_argument('--gpus',
-                        type=int,
-                        default=1,
-                        help="number of gpus to use")
     parser.add_argument('--seed',
                         type=int,
                         default=42,
