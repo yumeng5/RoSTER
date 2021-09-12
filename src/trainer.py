@@ -19,7 +19,6 @@ class RoSTERTrainer(object):
 
     def __init__(self, args):
         self.args = args
-        self.world_size = args.gpus
         self.seed = args.seed
         random.seed(args.seed)
         np.random.seed(args.seed)
@@ -68,6 +67,11 @@ class RoSTERTrainer(object):
         self.model = RoSTERModel.from_pretrained(args.pretrained_model, num_labels=self.num_labels-1,
                                                  hidden_dropout_prob=args.dropout, attention_probs_dropout_prob=args.dropout)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"***** Using {torch.cuda.device_count()} GPU(s)! *****\n")
+        if torch.cuda.device_count() > 1:
+            self.multi_gpu = True
+        else:
+            self.multi_gpu = False
 
         if args.do_train:
             tensor_data = self.processor.get_tensor(dataset_name="train", max_seq_length=self.max_seq_length, supervision='dist', drop_o_ratio=0.5)
@@ -108,8 +112,9 @@ class RoSTERTrainer(object):
     # prepare model, optimizer and scheduler for training
     def prepare_train(self, lr, epochs):
         model = self.model.to(self.device)
+        if self.multi_gpu:
+            model = nn.DataParallel(model)
         num_train_steps = int(len(self.train_data)/self.train_batch_size/self.gradient_accumulation_steps) * epochs
-        num_train_steps = num_train_steps // self.world_size
         param_optimizer = list(model.named_parameters())
         no_decay = ['bias', 'LayerNorm.weight']
         optimizer_grouped_parameters = [
@@ -338,6 +343,8 @@ class RoSTERTrainer(object):
     # use pre-trained RoBERTa to create contextualized augmentations given original sequences
     def aug(self, mask_prob=0.15, save_name="aug.pt"):
         model = self.model.to(self.device)
+        if self.multi_gpu:
+            model = nn.DataParallel(model)
         model.eval()
         train_sampler = RandomSampler(self.train_data)
         train_dataloader = DataLoader(self.train_data, sampler=train_sampler, batch_size=self.eval_batch_size)
@@ -351,7 +358,10 @@ class RoSTERTrainer(object):
             orig_ids = input_ids[valid_pos > 0]
             input_ids[mask_pos] = self.mask_id
             with torch.no_grad():
-                mlm_logits = model.mlm_pred(input_ids, attention_mask, valid_pos)
+                if self.multi_gpu:
+                    mlm_logits = model.module.mlm_pred(input_ids, attention_mask, valid_pos)
+                else:
+                    mlm_logits = model.mlm_pred(input_ids, attention_mask, valid_pos)
                 top_logits, top_idx = mlm_logits.topk(k=5, dim=-1)
                 sample_probs = F.softmax(top_logits, dim=-1)
                 sampled_token_idx = torch.multinomial(sample_probs, 1).view(-1)
