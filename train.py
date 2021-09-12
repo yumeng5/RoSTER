@@ -133,6 +133,7 @@ def main():
             args.seed = args.seed + 1
         
         # ensemble K model predictions and train an ensembled model
+        trainer = RoSTERTrainer(args)
         trainer.ensemble_pred(trainer.temp_dir)
         trainer.ensemble_train()
         
