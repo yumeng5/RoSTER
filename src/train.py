@@ -139,6 +139,8 @@ def main():
         shutil.rmtree(trainer.temp_dir, ignore_errors=True)
 
     if args.do_eval:
+        
+        trainer = RoSTERTrainer(args)
         trainer.load_model("final_model.pt", args.output_dir)
         y_pred, _ = trainer.eval(trainer.model, trainer.eval_dataloader)
         trainer.performance_report(trainer.y_true, y_pred)
