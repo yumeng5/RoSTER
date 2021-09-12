@@ -140,7 +140,7 @@ def main():
         # self-training
         trainer.self_train()
 
-        # shutil.rmtree(trainer.temp_dir, ignore_errors=True)
+        shutil.rmtree(trainer.temp_dir, ignore_errors=True)
 
     if args.do_eval:
         trainer.load_model("final_model.pt", args.output_dir)
