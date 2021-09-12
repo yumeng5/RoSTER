@@ -3,4 +3,4 @@ transformers == 3.3.1
 nltk == 3.5
 numpy == 1.18.5
 tqdm == 4.47.0
-seqeval==1.2.2
+seqeval == 1.2.2
