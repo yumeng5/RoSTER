@@ -2,7 +2,7 @@
 
 The original dataset is presented in the following paper:
 
-Erik F. Tjong Kim Sang and Fien De Meulder. "Introduction to the CoNLL-2003 shared task: Languageindependent named entity recognition." In Proceedings of the Seventh Conference on Natural Language Learning at HLT-NAACL 2003.
+Erik F. Tjong Kim Sang and Fien De Meulder. "Introduction to the CoNLL-2003 shared task: Language-independent named entity recognition." In Proceedings of the Seventh Conference on Natural Language Learning at HLT-NAACL 2003.
 
 We provide eight files: 
 * `{train/valid/test}_text.txt` are the text files where each line is one text sequence, and words are separated by whitespace characters. 
