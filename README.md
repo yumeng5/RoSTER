@@ -1,6 +1,6 @@
 # RoSTER
 
-The source code used for [**Distantly-Supervised Named Entity Recognition with Noise-Robust Learning and Language Model Augmented Self-Training**], published in EMNLP 2021.
+The source code used for [**Distantly-Supervised Named Entity Recognition with Noise-Robust Learning and Language Model Augmented Self-Training**](https://arxiv.org/abs/2109.05003), published in EMNLP 2021.
 
 ## Requirements
 
